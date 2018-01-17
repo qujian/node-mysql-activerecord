@@ -150,7 +150,8 @@ var Adapter = function(settings) {
 		}
 		return queryString;
 	};
-
+    this.buildDataString = buildDataString;
+    
 	var buildJoinString = function() {
 		var joinString = '';
 
@@ -221,7 +222,7 @@ var Adapter = function(settings) {
 			var combinedQueryString = 'SELECT COUNT(*) as count FROM ' + escapeFieldName(tableName)
 			+ buildJoinString()
 			+ buildDataString(whereClause, ' AND ', 'WHERE');
-
+                        console.log('sql:', combinedQueryString);
 			connection.query(combinedQueryString, function(err, res) { 
 				if (err)
 					responseCallback(err, null);
@@ -320,7 +321,7 @@ var Adapter = function(settings) {
 				if (querySuffix != '') {
 					combinedQueryString = combinedQueryString + ' ' + querySuffix;
 				}
-
+                                console.log('sql:', combinedQueryString);
 				connection.query(combinedQueryString, responseCallback);
 				resetQuery(combinedQueryString);
 			}
@@ -373,7 +374,7 @@ var Adapter = function(settings) {
 				map.push('(' + row.join(',') + ')');
 			})(i);
 		}
-
+                console.log(verb + ' INTO ' + escapeFieldName(tableName) + ' (' + escColumns.join(', ') + ') VALUES' + map.join(','));
 		that.query(verb + ' INTO ' + escapeFieldName(tableName) + ' (' + escColumns.join(', ') + ') VALUES' + map.join(','), responseCallback);
 		return that;
 	};
@@ -390,6 +391,7 @@ var Adapter = function(settings) {
 			+ (limitClause !== -1 ? ' LIMIT ' + limitClause : '')
 			+ (offsetClause !== -1 ? ' OFFSET ' + offsetClause : '');
 
+                        console.log('sql:', combinedQueryString);
 			connection.query(combinedQueryString, responseCallback);
 			resetQuery(combinedQueryString);
 		}
@@ -404,6 +406,7 @@ var Adapter = function(settings) {
 			+ buildDataString(whereClause, ' AND ', 'WHERE')
 			+ (limitClause !== -1 ? ' LIMIT ' + limitClause : '');
 
+                        console.log('sql:', combinedQueryString);
 			connection.query(combinedQueryString, responseCallback);
 			resetQuery(combinedQueryString);
 		}
@@ -421,6 +424,7 @@ var Adapter = function(settings) {
 			+ buildDataString(whereClause, ' AND ', 'WHERE')
 			+ (limitClause !== -1 ? ' LIMIT ' + limitClause : '');
 
+                        console.log('sql:', combinedQueryString);
 			connection.query(combinedQueryString, responseCallback);
 			resetQuery(combinedQueryString);
 		}
@@ -432,7 +436,8 @@ var Adapter = function(settings) {
 		return lastQuery;
 	};
 
-	this.query = function(sqlQueryString, responseCallback) {
+        this.query = function(sqlQueryString, responseCallback) {
+                console.log('sql:', sqlQueryString);
 		connection.query(sqlQueryString, responseCallback);
 		resetQuery(sqlQueryString);
 		return that;
@@ -546,6 +551,5 @@ var Pool = function (settings) {
 
 	return this;
 };
-
 exports.Adapter = Adapter;
 exports.Pool = Pool;
